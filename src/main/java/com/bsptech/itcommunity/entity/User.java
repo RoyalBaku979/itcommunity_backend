@@ -6,25 +6,21 @@
 package com.bsptech.itcommunity.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -39,6 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name")
     , @NamedQuery(name = "User.findBySurname", query = "SELECT u FROM User u WHERE u.surname = :surname")
     , @NamedQuery(name = "User.findByAge", query = "SELECT u FROM User u WHERE u.age = :age")
+    , @NamedQuery(name = "User.findByGender", query = "SELECT u FROM User u WHERE u.gender = :gender")
     , @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")
     , @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")
     , @NamedQuery(name = "User.findByEnabled", query = "SELECT u FROM User u WHERE u.enabled = :enabled")
@@ -53,48 +50,46 @@ public class User implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "name")
     private String name;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "surname")
     private String surname;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "age")
     private int age;
     @Basic(optional = false)
-    @Lob
+    @NotNull
     @Column(name = "gender")
-    private byte[] gender;
+    private boolean gender;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "email")
     private String email;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "password")
     private String password;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "enabled")
     private boolean enabled;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "insert_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date insertDateTime;
     @Column(name = "last_update_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdateDateTime;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId", fetch = FetchType.LAZY)
-    private Collection<UserRole> userRoleCollection;
-    @OneToMany(mappedBy = "insertUserId", fetch = FetchType.LAZY)
-    private Collection<DeveloperProfileSkill> developerProfileSkillCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId", fetch = FetchType.LAZY)
-    private Collection<DeveloperProfile> developerProfileCollection;
-    @OneToMany(mappedBy = "insertUserId", fetch = FetchType.LAZY)
-    private Collection<Role> roleCollection;
-    @OneToMany(mappedBy = "insertUserId", fetch = FetchType.LAZY)
-    private Collection<Skill> skillCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "insertUserId", fetch = FetchType.LAZY)
-    private Collection<Language> languageCollection;
-    @OneToMany(mappedBy = "insertUserId", fetch = FetchType.LAZY)
-    private Collection<DeveloperProfileLanguage> developerProfileLanguageCollection;
 
     public User() {
     }
@@ -103,7 +98,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Integer id, String name, String surname, int age, byte[] gender, String email, String password, boolean enabled, Date insertDateTime) {
+    public User(Integer id, String name, String surname, int age, boolean gender, String email, String password, boolean enabled, Date insertDateTime) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -147,11 +142,11 @@ public class User implements Serializable {
         this.age = age;
     }
 
-    public byte[] getGender() {
+    public boolean getGender() {
         return gender;
     }
 
-    public void setGender(byte[] gender) {
+    public void setGender(boolean gender) {
         this.gender = gender;
     }
 
@@ -193,69 +188,6 @@ public class User implements Serializable {
 
     public void setLastUpdateDateTime(Date lastUpdateDateTime) {
         this.lastUpdateDateTime = lastUpdateDateTime;
-    }
-
-    @XmlTransient
-    public Collection<UserRole> getUserRoleCollection() {
-        return userRoleCollection;
-    }
-
-    public void setUserRoleCollection(Collection<UserRole> userRoleCollection) {
-        this.userRoleCollection = userRoleCollection;
-    }
-
-    @XmlTransient
-    public Collection<DeveloperProfileSkill> getDeveloperProfileSkillCollection() {
-        return developerProfileSkillCollection;
-    }
-
-    public void setDeveloperProfileSkillCollection(Collection<DeveloperProfileSkill> developerProfileSkillCollection) {
-        this.developerProfileSkillCollection = developerProfileSkillCollection;
-    }
-
-    @XmlTransient
-    public Collection<DeveloperProfile> getDeveloperProfileCollection() {
-        return developerProfileCollection;
-    }
-
-    public void setDeveloperProfileCollection(Collection<DeveloperProfile> developerProfileCollection) {
-        this.developerProfileCollection = developerProfileCollection;
-    }
-
-    @XmlTransient
-    public Collection<Role> getRoleCollection() {
-        return roleCollection;
-    }
-
-    public void setRoleCollection(Collection<Role> roleCollection) {
-        this.roleCollection = roleCollection;
-    }
-
-    @XmlTransient
-    public Collection<Skill> getSkillCollection() {
-        return skillCollection;
-    }
-
-    public void setSkillCollection(Collection<Skill> skillCollection) {
-        this.skillCollection = skillCollection;
-    }
-
-    @XmlTransient
-    public Collection<Language> getLanguageCollection() {
-        return languageCollection;
-    }
-
-    public void setLanguageCollection(Collection<Language> languageCollection) {
-        this.languageCollection = languageCollection;
-    }
-
-    @XmlTransient
-    public Collection<DeveloperProfileLanguage> getDeveloperProfileLanguageCollection() {
-        return developerProfileLanguageCollection;
-    }
-
-    public void setDeveloperProfileLanguageCollection(Collection<DeveloperProfileLanguage> developerProfileLanguageCollection) {
-        this.developerProfileLanguageCollection = developerProfileLanguageCollection;
     }
 
     @Override
