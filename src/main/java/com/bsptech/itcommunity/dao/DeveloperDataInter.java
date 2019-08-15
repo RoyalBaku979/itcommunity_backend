@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 
 @Transactional
-public interface DeveloperDao extends CrudRepository<DeveloperProfile, Integer> {
+public interface DeveloperDataInter extends CrudRepository<DeveloperProfile, Integer> {
 
 }
